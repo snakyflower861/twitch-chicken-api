@@ -32,18 +32,21 @@ app.get("/adopt", (req, res) => {
   res.send(`${req.query.user} adopted a chicken! 🐔`);
 });
 
-// Boom a chicken
+// Boom a random chicken
 app.get("/boom", (req, res) => {
-  const target = (req.query.target || "").toLowerCase();
-  if (!target) return res.send("No target specified.");
+  const users = Object.keys(db);
+  if (users.length === 0) return res.send("No chickens exist to explode! 😇");
 
-  if (!db[target])
-    return res.send(`${req.query.target} has no chicken to explode! 😇`);
+  // Pick a random user
+  const randomUser = users[Math.floor(Math.random() * users.length)];
 
-  delete db[target];
+  // Remove the chicken
+  delete db[randomUser];
   saveDB();
-  res.send(`💥 ${req.query.target}'s chicken exploded in a glorious fireball!`);
+
+  res.send(`💥 ${randomUser}'s chicken exploded in a glorious fireball!`);
 });
+
 
 // Root check
 app.get("/", (req, res) => {
